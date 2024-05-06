@@ -4,16 +4,57 @@
 //
 //  Created by 朱麟凱 on 4/28/24.
 //
-
+import UIKit
 import SwiftUI
+
+
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Customize navigation bar appearance
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = UIColor.amethyst  // Set your custom color
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.daisy2]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.daisy2]
+
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        
+        UIView.appearance().tintColor = UIColor.cloud
+
+        return true
+    }
+}
+
+
+struct PressableButtonStyle: ButtonStyle {
+    var defaultColor: Color = Color.cBlue
+    var pressedColor: Color = Color.cSlate
+    var height: CGFloat = 340
+    var width: CGFloat = 10
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(configuration.isPressed ? pressedColor : defaultColor)
+            .frame(width: width, height: height)
+            .padding(.all,10)
+            .background(configuration.isPressed ? defaultColor.opacity(0.5) : pressedColor.opacity(0.8))
+            .cornerRadius(8)
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+    }
+}
 
 @main
 struct HestiaHubApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let persistenceController = PersistenceController.shared
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ProfileListView()
+                .background(Color.cBlue)
+                .background(ignoresSafeAreaEdges: .all)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

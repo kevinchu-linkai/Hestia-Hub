@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6C0FA22A2BDE968F000E4074 /* HestiaHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0FA2292BDE968F000E4074 /* HestiaHubApp.swift */; };
-		6C0FA22C2BDE968F000E4074 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0FA22B2BDE968F000E4074 /* ContentView.swift */; };
 		6C0FA22E2BDE9690000E4074 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C0FA22D2BDE9690000E4074 /* Assets.xcassets */; };
 		6C0FA2312BDE9690000E4074 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C0FA2302BDE9690000E4074 /* Preview Assets.xcassets */; };
 		6C0FA2332BDE9690000E4074 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0FA2322BDE9690000E4074 /* Persistence.swift */; };
@@ -16,6 +15,16 @@
 		6C0FA2402BDE9690000E4074 /* HestiaHubTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0FA23F2BDE9690000E4074 /* HestiaHubTests.swift */; };
 		6C0FA24A2BDE9690000E4074 /* HestiaHubUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0FA2492BDE9690000E4074 /* HestiaHubUITests.swift */; };
 		6C0FA24C2BDE9690000E4074 /* HestiaHubUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0FA24B2BDE9690000E4074 /* HestiaHubUITestsLaunchTests.swift */; };
+		6C0FA2592BDED519000E4074 /* ProfileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0FA2582BDED519000E4074 /* ProfileListView.swift */; };
+		6C0FA25B2BDED755000E4074 /* ProfileDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0FA25A2BDED755000E4074 /* ProfileDetailView.swift */; };
+		6C2FAF942BE7F0CE001B0E2D /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FAF932BE7F0CE001B0E2D /* Color.swift */; };
+		6C2FAF962BE7F107001B0E2D /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FAF952BE7F107001B0E2D /* Font.swift */; };
+		6C4498D42BE3A52D00D21B84 /* temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4498D32BE3A52D00D21B84 /* temp.swift */; };
+		6C4498D62BE3AE9500D21B84 /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C4498D52BE3AE9500D21B84 /* CameraPicker.swift */; };
+		6C50B5902BDEECDB007EA42C /* AddProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C50B58F2BDEECDB007EA42C /* AddProfileViewModel.swift */; };
+		6C50B5922BDEED1B007EA42C /* AddProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C50B5912BDEED1B007EA42C /* AddProfileView.swift */; };
+		6C50B5942BDFDEB7007EA42C /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C50B5932BDFDEB7007EA42C /* DocumentPicker.swift */; };
+		6C50B5962BDFDF5D007EA42C /* AddScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C50B5952BDFDF5D007EA42C /* AddScheduleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +47,6 @@
 /* Begin PBXFileReference section */
 		6C0FA2262BDE968F000E4074 /* HestiaHub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HestiaHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C0FA2292BDE968F000E4074 /* HestiaHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HestiaHubApp.swift; sourceTree = "<group>"; };
-		6C0FA22B2BDE968F000E4074 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6C0FA22D2BDE9690000E4074 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6C0FA2302BDE9690000E4074 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6C0FA2322BDE9690000E4074 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -48,6 +56,17 @@
 		6C0FA2452BDE9690000E4074 /* HestiaHubUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HestiaHubUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C0FA2492BDE9690000E4074 /* HestiaHubUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HestiaHubUITests.swift; sourceTree = "<group>"; };
 		6C0FA24B2BDE9690000E4074 /* HestiaHubUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HestiaHubUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		6C0FA2582BDED519000E4074 /* ProfileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileListView.swift; sourceTree = "<group>"; };
+		6C0FA25A2BDED755000E4074 /* ProfileDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDetailView.swift; sourceTree = "<group>"; };
+		6C1A27A82BE0351100A5BBC6 /* HestiaHub 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "HestiaHub 2.xcdatamodel"; sourceTree = "<group>"; };
+		6C2FAF932BE7F0CE001B0E2D /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		6C2FAF952BE7F107001B0E2D /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
+		6C4498D32BE3A52D00D21B84 /* temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = temp.swift; sourceTree = "<group>"; };
+		6C4498D52BE3AE9500D21B84 /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
+		6C50B58F2BDEECDB007EA42C /* AddProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileViewModel.swift; sourceTree = "<group>"; };
+		6C50B5912BDEED1B007EA42C /* AddProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProfileView.swift; sourceTree = "<group>"; };
+		6C50B5932BDFDEB7007EA42C /* DocumentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPicker.swift; sourceTree = "<group>"; };
+		6C50B5952BDFDF5D007EA42C /* AddScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddScheduleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,11 +117,20 @@
 		6C0FA2282BDE968F000E4074 /* HestiaHub */ = {
 			isa = PBXGroup;
 			children = (
+				6C2FAF932BE7F0CE001B0E2D /* Color.swift */,
 				6C0FA2292BDE968F000E4074 /* HestiaHubApp.swift */,
-				6C0FA22B2BDE968F000E4074 /* ContentView.swift */,
-				6C0FA22D2BDE9690000E4074 /* Assets.xcassets */,
+				6C2FAF952BE7F107001B0E2D /* Font.swift */,
 				6C0FA2322BDE9690000E4074 /* Persistence.swift */,
+				6C0FA2582BDED519000E4074 /* ProfileListView.swift */,
+				6C50B5932BDFDEB7007EA42C /* DocumentPicker.swift */,
+				6C50B5952BDFDF5D007EA42C /* AddScheduleView.swift */,
+				6C50B58F2BDEECDB007EA42C /* AddProfileViewModel.swift */,
+				6C50B5912BDEED1B007EA42C /* AddProfileView.swift */,
+				6C0FA25A2BDED755000E4074 /* ProfileDetailView.swift */,
+				6C4498D52BE3AE9500D21B84 /* CameraPicker.swift */,
+				6C4498D32BE3A52D00D21B84 /* temp.swift */,
 				6C0FA2342BDE9690000E4074 /* HestiaHub.xcdatamodeld */,
+				6C0FA22D2BDE9690000E4074 /* Assets.xcassets */,
 				6C0FA22F2BDE9690000E4074 /* Preview Content */,
 			);
 			path = HestiaHub;
@@ -263,10 +291,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6C50B5902BDEECDB007EA42C /* AddProfileViewModel.swift in Sources */,
+				6C0FA2592BDED519000E4074 /* ProfileListView.swift in Sources */,
 				6C0FA2332BDE9690000E4074 /* Persistence.swift in Sources */,
-				6C0FA22C2BDE968F000E4074 /* ContentView.swift in Sources */,
+				6C4498D62BE3AE9500D21B84 /* CameraPicker.swift in Sources */,
+				6C50B5962BDFDF5D007EA42C /* AddScheduleView.swift in Sources */,
+				6C2FAF942BE7F0CE001B0E2D /* Color.swift in Sources */,
+				6C50B5942BDFDEB7007EA42C /* DocumentPicker.swift in Sources */,
+				6C2FAF962BE7F107001B0E2D /* Font.swift in Sources */,
+				6C50B5922BDEED1B007EA42C /* AddProfileView.swift in Sources */,
 				6C0FA22A2BDE968F000E4074 /* HestiaHubApp.swift in Sources */,
 				6C0FA2362BDE9690000E4074 /* HestiaHub.xcdatamodeld in Sources */,
+				6C0FA25B2BDED755000E4074 /* ProfileDetailView.swift in Sources */,
+				6C4498D42BE3A52D00D21B84 /* temp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -433,6 +470,9 @@
 				DEVELOPMENT_TEAM = 4LJ93RNS54;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to allow you to upload documents directly by taking pictures.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -462,6 +502,9 @@
 				DEVELOPMENT_TEAM = 4LJ93RNS54;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app needs access to the camera to allow you to upload documents directly by taking pictures.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -601,6 +644,7 @@
 		6C0FA2342BDE9690000E4074 /* HestiaHub.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				6C1A27A82BE0351100A5BBC6 /* HestiaHub 2.xcdatamodel */,
 				6C0FA2352BDE9690000E4074 /* HestiaHub.xcdatamodel */,
 			);
 			currentVersion = 6C0FA2352BDE9690000E4074 /* HestiaHub.xcdatamodel */;

@@ -1,9 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23B2091" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Document" representedClassName="Document" syncable="YES" codeGenerationType="class">
+        <attribute name="fileData" optional="YES" attributeType="Binary"/>
+        <attribute name="fileName" optional="YES" attributeType="String"/>
+        <attribute name="fileType" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="profileID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="byProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Profiles" inverseName="ownDoc" inverseEntity="Profiles"/>
+    </entity>
+    <entity name="HealthCheckUpSchedule" representedClassName="HealthCheckUpSchedule" syncable="YES" codeGenerationType="class">
+        <attribute name="checkUpScheduleID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="checkUpType" optional="YES" attributeType="String"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="profileID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="recurring" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="recurringDay" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="byProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Profiles" inverseName="ownCheckUp" inverseEntity="Profiles"/>
+    </entity>
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
-    <elements>
-        <element name="Item" positionX="-63" positionY="-18" width="128" height="44"/>
-    </elements>
+    <entity name="Profiles" representedClassName="Profiles" syncable="YES" codeGenerationType="class">
+        <attribute name="age" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="allergies" optional="YES" attributeType="String"/>
+        <attribute name="bloodType" optional="YES" attributeType="String"/>
+        <attribute name="dateOfBirth" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateOfCreation" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateOfDeath" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="deceased" optional="YES" attributeType="String"/>
+        <attribute name="healthConditions" optional="YES" attributeType="String"/>
+        <attribute name="height" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="ongoingTreatments" optional="YES" attributeType="String"/>
+        <attribute name="pastSurgeries" optional="YES" attributeType="String"/>
+        <attribute name="profileName" attributeType="String"/>
+        <attribute name="reasonOfDeath" optional="YES" attributeType="String"/>
+        <attribute name="relationship" optional="YES" attributeType="String"/>
+        <attribute name="sex" optional="YES" attributeType="String"/>
+        <attribute name="weight" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="ownCheckUp" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="HealthCheckUpSchedule" inverseName="byProfile" inverseEntity="HealthCheckUpSchedule"/>
+        <relationship name="ownDoc" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Document" inverseName="byProfile" inverseEntity="Document"/>
+        <relationship name="ownVaccination" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="VaccinationSchedule" inverseName="byProfile" inverseEntity="VaccinationSchedule"/>
+    </entity>
+    <entity name="VaccinationSchedule" representedClassName="VaccinationSchedule" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
+        <attribute name="profileID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="vaccinationScheduleID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="vaccineType" optional="YES" attributeType="String"/>
+        <relationship name="byProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Profiles" inverseName="ownVaccination" inverseEntity="Profiles"/>
+    </entity>
 </model>

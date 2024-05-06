@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23B2091" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Document" representedClassName="Document" versionHashModifier="New Version" syncable="YES" codeGenerationType="class">
+        <attribute name="fileData" attributeType="Binary"/>
+        <attribute name="fileName" attributeType="String" defaultValueString=""/>
+        <attribute name="fileType" attributeType="String" defaultValueString=""/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="profileID" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="byProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Profiles" inverseName="ownDoc" inverseEntity="Profiles"/>
+    </entity>
+    <entity name="HealthCheckUpSchedule" representedClassName="HealthCheckUpSchedule" syncable="YES" codeGenerationType="class">
+        <attribute name="checkUpScheduleID" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="checkUpType" attributeType="String" defaultValueString=""/>
+        <attribute name="date" attributeType="Date" defaultDateTimeInterval="736114560" usesScalarValueType="NO"/>
+        <attribute name="profileID" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="byProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Profiles" inverseName="ownCheckUp" inverseEntity="Profiles"/>
+    </entity>
+    <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
+    <entity name="Profiles" representedClassName="Profiles" syncable="YES" codeGenerationType="class">
+        <attribute name="dateOfBirth" attributeType="Date" defaultDateTimeInterval="736114560" usesScalarValueType="NO"/>
+        <attribute name="dateOfCreation" attributeType="Date" defaultDateTimeInterval="736114560" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="profileName" attributeType="String" defaultValueString=""/>
+        <relationship name="ownCheckUp" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="HealthCheckUpSchedule" inverseName="byProfile" inverseEntity="HealthCheckUpSchedule"/>
+        <relationship name="ownDoc" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Document" inverseName="byProfile" inverseEntity="Document"/>
+        <relationship name="ownVaccination" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="VaccinationSchedule" inverseName="byProfile" inverseEntity="VaccinationSchedule"/>
+    </entity>
+    <entity name="VaccinationSchedule" representedClassName="VaccinationSchedule" syncable="YES" codeGenerationType="class">
+        <attribute name="date" attributeType="Date" defaultDateTimeInterval="736114620" usesScalarValueType="NO"/>
+        <attribute name="profileID" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="vaccinationScheduleID" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="vaccineType" attributeType="String" defaultValueString=""/>
+        <relationship name="byProfile" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Profiles" inverseName="ownVaccination" inverseEntity="Profiles"/>
+    </entity>
+</model>
