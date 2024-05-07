@@ -13,8 +13,6 @@ struct AddProfileView: View {
     @StateObject var viewModel = AddProfileViewModel()
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) private var presentationMode
-    
-    //@ObservedObject private var viewModel = AddProfileViewModel()
     @State private var showDetailForNewProfile: Bool = false
     @State private var newProfile: Profiles?
     

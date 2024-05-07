@@ -15,6 +15,7 @@ enum ScheduleType: String, CaseIterable, Identifiable {
 }
 
 struct AddScheduleView: View {
+    var profile: Profiles
     @State private var notes: String = ""
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -23,15 +24,53 @@ struct AddScheduleView: View {
     @State private var recurrenceFrequency = 1  // How often the event recurs
     @State private var recurrenceUnit = "Weeks"
     @State private var someEndDate: Date = Calendar.current.date(byAdding: .year, value: 1, to: Date())!
-    var profile: Profiles
     @State private var scheduleDate = Date()
     @State private var showAlert = false // State to control alert visibility
     @State private var alertMessage = "" // The message to be displayed in the alert
-    
     @State private var scheduleType = "Vaccination" // Default type, can be "Vaccination" or "HealthCheckUp"
     @State private var vaccinationType = ""
     @State private var healthCheckUpType = ""
     @State private var selectedVaccineInfo: VaccineInfo?
+    
+    func scheduleNotificationV(for schedule: VaccinationSchedule) {
+        let content = UNMutableNotificationContent()
+        content.title = "Reminder: \(schedule.vaccineType ?? "Appointment")"
+        content.body = "Your vaccination \(schedule.vaccineType ?? "appointment") is coming up in 10 minutes."
+        content.sound = UNNotificationSound.default
+
+        if let date = schedule.date {
+            let triggerDate = Calendar.current.date(byAdding: .minute, value: -10, to: date)!
+            let triggerDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+            
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Error scheduling notification: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func scheduleNotificationH(for schedule: HealthCheckUpSchedule) {
+        let content = UNMutableNotificationContent()
+        content.title = "Reminder: \(schedule.checkUpType ?? "Appointment")"
+        content.body = "Your health check-up\(schedule.checkUpType ?? "appointment") is coming up in 10 minutes."
+        content.sound = UNNotificationSound.default
+
+        if let date = schedule.date {
+            let triggerDate = Calendar.current.date(byAdding: .minute, value: -10, to: date)!
+            let triggerDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+            
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Error scheduling notification: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
     
     let vaccinationSchedules: [String: VaccineInfo] = [
         "-": VaccineInfo(
@@ -216,6 +255,7 @@ struct AddScheduleView: View {
 
         do {
             try viewContext.save()
+            
             self.presentationMode.wrappedValue.dismiss()
         } catch {
             alertMessage = "There was an error saving the schedules. Please try again."
@@ -256,6 +296,7 @@ struct AddScheduleView: View {
         newVaccinationSchedule.date = date
         newVaccinationSchedule.vaccineType = vaccineType
         newVaccinationSchedule.profileID = profile.id
+        scheduleNotificationV(for: newVaccinationSchedule)
     }
     
     // Function to check if all fields are filled in
@@ -298,6 +339,7 @@ struct AddScheduleView: View {
                 newHealthCheckUpSchedule.checkUpType = healthCheckUpType
                 newHealthCheckUpSchedule.profileID = profile.id
                 newHealthCheckUpSchedule.notes = notes
+                scheduleNotificationH(for: newHealthCheckUpSchedule)
             }
         }
 
@@ -320,7 +362,7 @@ struct AddScheduleView: View {
             newSchedule.checkUpType = healthCheckUpType
             newSchedule.profileID = profile.id
             newSchedule.notes = notes
-
+            scheduleNotificationH(for: newSchedule)
             guard let nextDate = calculateNextDate(from: currentDate) else { break }
             currentDate = nextDate
         }

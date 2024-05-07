@@ -4,7 +4,6 @@ import UIKit
 import Combine
 import CoreData
 
-
 struct ProfileDetailView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @ObservedObject var userProfile: Profiles // Assuming Profiles has a one-to-many relationship with a Document entity
@@ -385,7 +384,7 @@ struct CalendarView: View {
                                 .datePickerStyle(CompactDatePickerStyle())
                                 .onDisappear {
                                     // When the DatePicker disappears, save the changes
-                                    saveChanges(for: schedule)
+                                    saveChangesV(for: schedule)
                                 }
                             }
                         }
@@ -393,7 +392,7 @@ struct CalendarView: View {
                     } else {
                         ForEach(vaccinationSchedules) { schedule in
                             if Calendar.current.isDate(schedule.date ?? Date(), inSameDayAs: selectedDate) {
-                                scheduleRow(schedule)
+                                scheduleRowV(schedule)
                             }
                         }
                         .onDelete(perform: deleteVaccinationSchedule)
@@ -420,7 +419,7 @@ struct CalendarView: View {
                                 .accentColor(.cBlue)
                                 .onDisappear {
                                     // When the DatePicker disappears, save the changes
-                                    saveChanges(for: schedule)
+                                    saveChangesH(for: schedule)
                                 }
                             }
                         }
@@ -428,7 +427,7 @@ struct CalendarView: View {
                     } else {
                         ForEach(healthCheckUpSchedules) { schedule in
                             if Calendar.current.isDate(schedule.date ?? Date(), inSameDayAs: selectedDate) {
-                                scheduleRow(schedule)
+                                scheduleRowH(schedule)
                             }
                         }
                         .onDelete(perform: deleteHealthCheckUpSchedule)
@@ -452,8 +451,48 @@ struct CalendarView: View {
         }
     }
     
+    func scheduleNotificationV(for schedule: VaccinationSchedule) {
+        let content = UNMutableNotificationContent()
+        content.title = "Reminder: \(schedule.vaccineType ?? "Appointment")"
+        content.body = "Your vaccination \(schedule.vaccineType ?? "appointment") is coming up in 10 minutes."
+        content.sound = UNNotificationSound.default
+
+        if let date = schedule.date {
+            let triggerDate = Calendar.current.date(byAdding: .minute, value: -10, to: date)!
+            let triggerDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+            
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Error scheduling notification: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    func scheduleNotificationH(for schedule: HealthCheckUpSchedule) {
+        let content = UNMutableNotificationContent()
+        content.title = "Reminder: \(schedule.checkUpType ?? "Appointment")"
+        content.body = "Your health check-up\(schedule.checkUpType ?? "appointment") is coming up in 10 minutes."
+        content.sound = UNNotificationSound.default
+
+        if let date = schedule.date {
+            let triggerDate = Calendar.current.date(byAdding: .minute, value: -10, to: date)!
+            let triggerDateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+            
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Error scheduling notification: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
     // Helper view to create a schedule row
-    private func scheduleRow(_ schedule: HealthCheckUpSchedule) -> some View {
+    private func scheduleRowH(_ schedule: HealthCheckUpSchedule) -> some View {
         HStack {
             Text(schedule.checkUpType ?? "Unknown Check-Up")
             Spacer()
@@ -480,7 +519,7 @@ struct CalendarView: View {
         }
     }
     
-    private func scheduleRow(_ schedule: VaccinationSchedule) -> some View {
+    private func scheduleRowV(_ schedule: VaccinationSchedule) -> some View {
         HStack {
             Text(schedule.vaccineType ?? "Unknown Vaccine")
             Spacer()
@@ -496,6 +535,7 @@ struct CalendarView: View {
                         Button("Close") {
                             showingNotePopover = false
                         }
+                        .accentColor(.cBlue)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black.opacity(0.2))
@@ -506,28 +546,30 @@ struct CalendarView: View {
         }
     }
     
-    private func beginEditing(_ schedule: VaccinationSchedule) {
+    private func beginEditingV(_ schedule: VaccinationSchedule) {
         editableVaccineSchedule = schedule
         editedScheduleDate = schedule.date
         isEditingSchedule = true
     }
     
-    private func saveChanges(for schedule: VaccinationSchedule) {
+    private func saveChangesV(for schedule: VaccinationSchedule) {
         guard let newDate = editedScheduleDate else { return }
         schedule.date = newDate
+        scheduleNotificationV(for: schedule)
         try? viewContext.save()
         isEditingSchedule = false
     }
     
-    private func beginEditing(_ schedule: HealthCheckUpSchedule) {
+    private func beginEditingH(_ schedule: HealthCheckUpSchedule) {
         editableCheckUpSchedule = schedule
         editedScheduleDate = schedule.date
         isEditingSchedule = true
     }
     
-    private func saveChanges(for schedule: HealthCheckUpSchedule) {
+    private func saveChangesH(for schedule: HealthCheckUpSchedule) {
         guard let newDate = editedScheduleDate else { return }
         schedule.date = newDate
+        scheduleNotificationH(for: schedule)
         try? viewContext.save()
         isEditingSchedule = false
     }
@@ -553,7 +595,7 @@ struct DocumentsView: View {
     @State private var image: UIImage?
     @State private var showingPicker = false
     @State private var sourceType: PickerSourceType = .camera
-    @State private var forceUpdate = false
+    @State private var refreshID = UUID()
 
     
     let maxExportLimit = 20  // Maximum number of documents that can be selected for export
@@ -579,9 +621,13 @@ struct DocumentsView: View {
         }
     }
     
+    private func refreshDocuments() {
+        documents.nsPredicate = NSPredicate(format: "profileID == %@", userProfile.id! as CVarArg)
+    }
+    
     private func exportDocuments() {
-            let documentsToExport = documents.filter { selectedExportDocuments.contains($0.id) }.compactMap { document -> URL? in
-                guard let data = document.fileData else { return nil }
+        let documentsToExport = documents.filter { selectedExportDocuments.contains($0.id)
+        }.compactMap { document -> URL? in guard let data = document.fileData else { return nil }
                 let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent(document.fileName ?? "temp.pdf")
                 do {
                     try data.write(to: tmpURL)
@@ -623,8 +669,9 @@ struct DocumentsView: View {
             .padding(.top,10)
             .navigationTitle("Documents")
             .onAppear {
-                self.forceUpdate.toggle()  // Toggle to refresh view
+                self.documents.nsPredicate = NSPredicate(format: "profileID == %@", userProfile.id! as CVarArg)
             }
+
 //            .toolbar {
 //                if isInExportMode {
 //                    Button("Export Selected") {
@@ -691,7 +738,11 @@ struct DocumentsView: View {
                         showAlert: $showAlert,
                         sourceType: sourceType)
             }
+            .id(refreshID)
         }
+        .onAppear{
+                    refreshID = UUID() // Change the ID to force update
+                }
     }
 }
 
@@ -768,6 +819,7 @@ struct DocumentDetailView: View {
                     document.fileName = fullName  // Preserve original file extension
                     do {
                         try viewContext.save()
+
                     } catch {
                         print("Failed to save document: \(error)")
                     }

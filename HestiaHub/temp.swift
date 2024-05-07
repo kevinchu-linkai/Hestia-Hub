@@ -1,254 +1,182 @@
-//struct DocumentsView: View {
-//    let maxFileSize = 10 * 1024 * 1024  // 10 MB in bytes
-//    let maxTotalSize = 50 * 1024 * 1024  // 50 MB in bytes
-//    @ObservedObject var userProfile: Profiles
+//import SwiftUI
+//
+//// Struct for individual vaccine schedule row
+//struct VaccineScheduleRow: View {
+//    @ObservedObject var schedule: VaccinationSchedule
 //    @Environment(\.managedObjectContext) private var viewContext
-//    @FetchRequest var documents: FetchedResults<Document>
-//    @State private var showingDocumentPicker = false
-//    @State private var selectedExportDocuments = Set<Document.ID>()
-//    @State private var showingShareSheet = false
-//    @State private var activityItems: [URL] = []
-//    @State private var isInExportMode = false
-//    @State private var showAlert = false
-//    @State private var alertMessage = ""
-//    
-//    let maxExportLimit = 5  // Maximum number of documents that can be selected for export
-//
-//    init(userProfile: Profiles) {
-//        self.userProfile = userProfile
-//        
-//        // Safely unwrapping `userProfile.id`
-//        if let profileID = userProfile.id {
-//            self._documents = FetchRequest<Document>(
-//                entity: Document.entity(),
-//                sortDescriptors: [NSSortDescriptor(keyPath: \Document.fileName, ascending: true)],
-//                predicate: NSPredicate(format: "profileID == %@", profileID as CVarArg)
-//            )
-//        } else {
-//            // Handle the case where `id` is `nil` by setting up a fetch request that will not return any results.
-//            self._documents = FetchRequest<Document>(
-//                entity: Document.entity(),
-//                sortDescriptors: [NSSortDescriptor(keyPath: \Document.fileName, ascending: true)],
-//                predicate: NSPredicate(format: "1 == 0")
-//            )
-//        }
-//    }
-//
-//
-//    var body: some View {
-//        VStack {
-//            VStack {
-//                Button("Upload Documents") {
-//                    showingDocumentPicker = true
-//                }
-//                .sheet(isPresented: $showingDocumentPicker) {
-//                    DocumentPicker(profile: userProfile,
-//                                   selectedDocuments: $activityItems,
-//                                   allowedContentTypes: [.pdf, .png, .jpeg],
-//                                   maxFileSize: maxFileSize,
-//                                   maxTotalSize: maxTotalSize,
-//                                   alertMessage: $alertMessage,
-//                                   showAlert: $showAlert)
-//                }
-//                .alert(isPresented: $showAlert) {
-//                    Alert(title: Text("Alert"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-//                }
-//                
-//                if isInExportMode {
-//                    Button("Close Export") {
-//                        isInExportMode.toggle()
-//                    }
-//                } else {
-//                    Button("Export Documents") {
-//                        isInExportMode.toggle()
-//                    }
-//                }
-//
-//                List {
-//                    ForEach(documents, id: \.self) { document in
-//                        if isInExportMode {
-//                            MultipleSelectionRow(document: document, isSelected: selectedExportDocuments.contains(document.id)) {
-//                                                toggleSelection(for: document)
-//                            }
-//                        } else {
-//                            NavigationLink(destination: DocumentDetailView(document: document)) {
-//                                Text(document.fileName ?? "Unknown")
-//                            }
-//                        }
-//                    }
-//                    .onDelete(perform: deleteDocuments)
-//                }
-//                
-//                if isInExportMode {
-//                    Button("Export Selected") {
-//                        exportDocuments()
-//                    }
-//                    .disabled(selectedExportDocuments.isEmpty)
-//                }
-//            }
-//            .padding()
-//            .navigationTitle("Documents")
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    if isInExportMode {
-//                        Button("Done") {
-//                            isInExportMode = false
-//                            selectedExportDocuments.removeAll()
-//                        }
-//                    }
-//                }
-//            }
-//            .sheet(isPresented: $showingShareSheet) {
-//                ActivityView(activityItems: activityItems)
-//            }
-//        }
-//    }
-//    
-//    private func toggleSelection(for document: Document) {
-//        guard let id = document.id else {
-//            print("Document ID is nil")
-//            return
-//        }
-//        if selectedExportDocuments.contains(id) {
-//            selectedExportDocuments.remove(id)
-//            print("Deselected \(id)")
-//        } else if selectedExportDocuments.count < maxExportLimit {
-//            selectedExportDocuments.insert(id)
-//            print("Selected \(id)")
-//        } else {
-//            print("Selection limit reached")
-//        }
-//        print("Current selections: \(selectedExportDocuments)")
-//    }
-//    
-//    private func exportDocuments() {
-//        let documentsToExport = documents.filter { selectedExportDocuments.contains($0.id) }.compactMap { document -> URL? in
-//            guard let data = document.fileData else { return nil }
-//            let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent(document.fileName ?? "temp.pdf")
-//            do {
-//                try data.write(to: tmpURL)
-//                return tmpURL
-//            } catch {
-//                print("Failed to write file data for export: \(error)")
-//                return nil
-//            }
-//        }
-//        if !documentsToExport.isEmpty {
-//            activityItems = documentsToExport
-//            showingShareSheet = true
-//            selectedExportDocuments.removeAll()  // Clear selections after export
-//            isInExportMode = false  // Reset export mode after sharing
-//        }
-//    }
-//    
-//    private func deleteDocuments(at offsets: IndexSet) {
-//        for index in offsets {
-//            let document = documents[index]
-//            viewContext.delete(document)
-//        }
-//        
-//        do {
-//            try viewContext.save()
-//        } catch {
-//            print("Error saving context after deleting documents: \(error)")
-//        }
-//    }
-//}
-//
-//struct MultipleSelectionRow: View {
-//    var document: Document
-//    var isSelected: Bool
-//    var action: () -> Void
+//    @State private var showingPopover = false
+//    @State private var isEditing = false
+//    @State private var editedDate: Date?
 //
 //    var body: some View {
 //        HStack {
-//            Text(document.fileName ?? "Unknown")
-//            Spacer()
-//            if isSelected {
-//                Image(systemName: "checkmark")
+//            if isEditing {
+//                DatePicker("Edit Date:", selection: Binding(get: { editedDate ?? schedule.date ?? Date() }, set: { editedDate = $0 }), displayedComponents: .date)
+//                Button("Save") {
+//                    if let newDate = editedDate {
+//                        schedule.date = newDate
+//                        scheduleNotification(for: schedule)
+//                        try? viewContext.save()
+//                        isEditing = false
+//                    }
+//                }
+//            } else {
+//                Text(schedule.vaccineType ?? "Unknown Vaccine")
+//                Spacer()
+//                Text(formatDate(schedule.date ?? Date()))
+//                    .onTapGesture {
+//                        showingPopover = true
+//                    }
 //            }
 //        }
-//        .contentShape(Rectangle())
-//        .onTapGesture(perform: action)
+//        .popover(isPresented: $showingPopover) {
+//            Text(schedule.notes ?? "No additional notes provided.")
+//        }
+//    }
+//
+//    private func scheduleNotification(for schedule: VaccinationSchedule) {
+//        // Implementation of notification scheduling (Same as previously discussed)
+//    }
+//
+//    private func formatDate(_ date: Date) -> String {
+//        let formatter = DateFormatter()
+//        formatter.dateStyle = .none
+//        formatter.timeStyle = .short
+//        return formatter.string(from: date)
 //    }
 //}
 //
-//struct ActivityView: UIViewControllerRepresentable {
-//    var activityItems: [URL]
-//    var applicationActivities: [UIActivity]? = nil
-//
-//    func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityView>) -> UIActivityViewController {
-//        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
-//        return controller
-//    }
-//
-//    func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityView>) {
-//        // No update action needed
-//    }
-//}
-//
-//struct DocumentDetailView: View {
-//    @ObservedObject var document: Document
+//// Struct for individual health check-up schedule row
+//struct HealthCheckUpScheduleRow: View {
+//    @ObservedObject var schedule: HealthCheckUpSchedule
 //    @Environment(\.managedObjectContext) private var viewContext
-//    @State private var newName: String = ""
-//    @State private var isEditing: Bool = false
+//    @State private var showingPopover = false
+//    @State private var isEditing = false
+//    @State private var editedDate: Date?
 //
+//    var body: some View {
+//        HStack {
+//            if isEditing {
+//                DatePicker("Edit Date:", selection: Binding(get: { editedDate ?? schedule.date ?? Date() }, set: { editedDate = $0 }), displayedComponents: .date)
+//                Button("Save") {
+//                    if let newDate = editedDate {
+//                        schedule.date = newDate
+//                        scheduleNotification(for: schedule)
+//                        try? viewContext.save()
+//                        isEditing = false
+//                    }
+//                }
+//            } else {
+//                Text(schedule.checkUpType ?? "Unknown Check-Up")
+//                Spacer()
+//                Text(formatDate(schedule.date ?? Date()))
+//                    .onTapGesture {
+//                        showingPopover = true
+//                    }
+//            }
+//        }
+//        .popover(isPresented: $showingPopover) {
+//            Text(schedule.notes ?? "No additional notes provided.")
+//        }
+//    }
+//
+//    private func scheduleNotification(for schedule: HealthCheckUpSchedule) {
+//        // Implementation of notification scheduling (Same as previously discussed)
+//    }
+//
+//    private func formatDate(_ date: Date) -> String {
+//        let formatter = DateFormatter()
+//        formatter.dateStyle = .none
+//        formatter.timeStyle = .short
+//        return formatter.string(from: date)
+//    }
+//}
+//
+//// Main CalendarView structure
+//struct CalendarView: View {
+//    @ObservedObject var userProfile: Profiles
+//    @Binding var selectedDate: Date
+//    @Environment(.managedObjectContext) private var viewContext
+//    @State private var showingAddScheduleView = false
+//    @State private var isEditMode: EditMode = .inactive
+//    @State private var showAlert = false // State to manage alert visibility
+//    @State private var alertMessage = ""
+//    @FetchRequest var vaccinationSchedules: FetchedResults<VaccinationSchedule>
+//    @FetchRequest var healthCheckUpSchedules: FetchedResults<HealthCheckUpSchedule>
+//    
 //    var body: some View {
 //        VStack {
-//            if isEditing {
-//                TextField("Enter new name", text: $newName)
-//                Button("Save") {
-//                    document.fileName = newName
-//                    try? viewContext.save()
-//                    isEditing = false
+//            DatePicker(
+//                "Select Date",
+//                selection: $selectedDate,
+//                displayedComponents: [.date] // Only show the date picker, not time.
+//            )
+//            .datePickerStyle(GraphicalDatePickerStyle())
+//            .accentColor(.cBlue)
+//            .padding(.vertical)
+//            
+//            Button("Add Appointment") {
+//                if userProfile.deceased == "Yes" {
+//                    alertMessage = randomHeartwarmingMessage()
+//                    showAlert = true
+//                } else {
+//                    showingAddScheduleView = true
 //                }
-//            } else {
-//                Text(document.fileName ?? "Unknown Document")
-//                Button("Rename") {
-//                    newName = document.fileName ?? ""
-//                    isEditing = true
-//                }
+//            }
+//            .buttonStyle(PressableButtonStyle(defaultColor: .cBlue, pressedColor: .cCloud))
+//            .alert(isPresented: $showAlert) {
+//                Alert(title: Text("Notice"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
 //            }
 //            
-//            // Determine how to display the document based on its type
-//            if let fileData = document.fileData, document.fileName?.hasSuffix(".pdf") == true {
-//                PDFViewer(data: fileData)
-//            } else if let fileData = document.fileData, document.fileName?.hasSuffix(".png") == true {
-//                ImageViewer(data: fileData)
-//            } else {
-//                Text("File format not supported for preview")
+//            List {
+//                Section(header: Text("Vaccination Schedules")) {
+//                    ForEach(vaccinationSchedules) { schedule in
+//                        if Calendar.current.isDate(schedule.date ?? Date(), inSameDayAs: selectedDate) {
+//                            VaccineScheduleRow(schedule: schedule)
+//                        }
+//                    }
+//                    .onDelete(perform: deleteVaccinationSchedule)
+//                }
+//                
+//                Section(header: Text("Health Check-Up Schedules")) {
+//                    ForEach(healthCheckUpSchedules) { schedule in
+//                        if Calendar.current.isDate(schedule.date ?? Date(), inSameDayAs: selectedDate) {
+//                            HealthCheckUpScheduleRow(schedule: schedule)
+//                        }
+//                    }
+//                    .onDelete(perform: deleteHealthCheckUpSchedule)
+//                }
+//            }
+//            .navigationTitle("Schedules")
+//            .toolbar {
+//                EditButton()
+//            }
+//            
+//            NavigationLink(
+//                destination: AddScheduleView(profile: userProfile),
+//                isActive: $showingAddScheduleView
+//            ) {
+//                EmptyView()
 //            }
 //        }
-//        .padding()
-//        .navigationTitle("Document Details")
 //    }
-//}
-//
-//struct PDFViewer: UIViewRepresentable {
-//    var data: Data
-//
-//    func makeUIView(context: Context) -> PDFView {
-//        let pdfView = PDFView()
-//        pdfView.autoScales = true
-//        pdfView.document = PDFDocument(data: data)
-//        return pdfView
-//    }
-//
-//    func updateUIView(_ pdfView: PDFView, context: Context) {
-//        // Update the view if required.
-//    }
-//}
-//
-//struct ImageViewer: View {
-//    var data: Data
-//
-//    var body: some View {
-//        if let uiImage = UIImage(data: data) {
-//            Image(uiImage: uiImage)
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-//        } else {
-//            Text("Unable to load image")
+//    
+//    private func deleteVaccinationSchedule(at offsets: IndexSet) {
+//        withAnimation {
+//            offsets.map { vaccinationSchedules[$0] }.forEach(viewContext.delete)
+//            try? viewContext.save()
 //        }
+//    }
+//    
+//    private func deleteHealthCheckUpSchedule(at offsets: IndexSet) {
+//        withAnimation {
+//            offsets.map { healthCheckUpSchedules[$0] }.forEach(viewContext.delete)
+//            try? viewContext.save()
+//        }
+//    }
+//    
+//    private func randomHeartwarmingMessage() -> String {
+//        let messages = [        "Remembering the joyous moments, we treasure the time spent together.",        "Their memories will live on in our hearts forever.",        "May the love and cherished moments comfort you in this time.",        "May the memories of the wonderful times you shared comfort you in the days ahead.",        "Our hearts are saddened by your loss, and our thoughts and prayers are with you.",        "Our deepest sympathies as you remember \(userProfile.profileName ?? "them").",        "Wishing you peace to bring comfort, courage to face the days ahead, and loving memories to forever hold in your heart."    ]
+//        return messages.randomElement() ?? "They will always be remembered."
 //    }
 //}
